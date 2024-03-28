@@ -1,4 +1,3 @@
-
 #include <stdlib.h>
 
 char *get_int(int num);
@@ -94,4 +93,3 @@ void fill_numbase_buff(unsigned int num, unsigned int base,
 		i--;
 	}
 }
-

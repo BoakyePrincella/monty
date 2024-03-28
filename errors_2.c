@@ -1,97 +1,71 @@
+#include "monty.h"
 
-#include <stdlib.h>
-
-char *get_int(int num);
-unsigned int _abs(int);
-int get_numbase_len(unsigned int num, unsigned int base);
-void fill_numbase_buff(unsigned int num, unsigned int base,
-		       char *buff, int buff_size);
+int short_stack_error(unsigned int line_number, char *op);
+int div_error(unsigned int line_number);
+int pop_error(unsigned int line_number);
+int div_error(unsigned int line_number);
+int pchar_error(unsigned int line_number, char *message);
 
 /**
- * get_int - gets a character pointer to new string containing int
- * @num: number to convert to string
+ * pop_error - Prints pop error messages for empty stacks.
+ * @line_number: Line number in script where error occured.
  *
- * Return: character pointer to newly created string. NULL if malloc fails.
+ * Return: (EXIT_FAILURE) always.
  */
-char *get_int(int num)
+int pop_error(unsigned int line_number)
 {
-	unsigned int temp;
-	int length = 0;
-	long num_l = 0;
-	char *ret;
-
-	temp = _abs(num);
-	length = get_numbase_len(temp, 10);
-
-	if (num < 0 || num_l < 0)
-		length++; /* negative sign */
-	ret = malloc(length + 1); /* create new string */
-	if (!ret)
-		return (NULL);
-
-	fill_numbase_buff(temp, 10, ret, length);
-	if (num < 0 || num_l < 0)
-		ret[0] = '-';
-
-	return (ret);
+	fprintf(stderr, "L%u: can't pop an empty stack\n", line_number);
+	return (EXIT_FAILURE);
 }
 
 /**
- * _abs - gets the absolute value of an integer
- * @i: integer to get absolute value of
+ * pint_error - Prints pint error messages for empty stacks.
+ * @line_number: Line number in Monty bytecodes file where error occurred.
  *
- * Return: unsigned integer abs rep of i
+ * Return: (EXIT_FAILURE) always.
  */
-unsigned int _abs(int i)
+int pint_error(unsigned int line_number)
 {
-	if (i < 0)
-		return (-(unsigned int)i);
-	return ((unsigned int)i);
+	fprintf(stderr, "L%d: can't pint, stack empty\n", line_number);
+	return (EXIT_FAILURE);
 }
 
 /**
- * get_numbase_len - gets length of buffer needed for an unsigned int
- * @num: number to get length needed for
- * @base: base of number representation used by buffer
+ * short_stack_error - Prints monty math function error messages
+ *                     for stacks/queues smaller than two nodes.
+ * @line_number: Line number in Monty bytecodes file where error occurred.
+ * @op: Operation where the error occurred.
  *
- * Return: integer containing length of buffer needed (doesn't contain null bt)
+ * Return: (EXIT_FAILURE) always.
  */
-int get_numbase_len(unsigned int num, unsigned int base)
+int short_stack_error(unsigned int line_number, char *op)
 {
-	int len = 1; /* all numbers contain atleast one digit */
-
-	while (num > base - 1)
-	{
-		len++;
-		num /= base;
-	}
-	return (len);
+	fprintf(stderr, "L%u: can't %s, stack too short\n", line_number, op);
+	return (EXIT_FAILURE);
 }
 
 /**
- * fill_numbase_buff - fills buffer with correct numbers up to base 36
- * @num: number to convert to string given base
- * @base: base of number used in conversion, only works up to base 36
- * @buff: buffer to fill with result of conversion
- * @buff_size: size of buffer in bytes
+ * div_error - Prints division error messages for division by 0.
+ * @line_number: Line number in Monty bytecodes file where error occurred.
  *
- * Return: always void.
+ * Return: (EXIT_FAILURE) always.
  */
-void fill_numbase_buff(unsigned int num, unsigned int base,
-			char *buff, int buff_size)
+int div_error(unsigned int line_number)
 {
-	int rem, i = buff_size - 1;
-
-	buff[buff_size] = '\0';
-	while (i >= 0)
-	{
-		rem = num % base;
-		if (rem > 9) /* return lowercase ascii val representation */
-			buff[i] = rem + 87; /* 10 will be a, 11 = b, ... */
-		else
-			buff[i] = rem + '0';
-		num /= base;
-		i--;
-	}
+	fprintf(stderr, "L%u: division by zero\n", line_number);
+	return (EXIT_FAILURE);
 }
 
+/**
+ * pchar_error - Prints pchar error messages for empty stacks
+ *               empty stacks and non-character values.
+ * @line_number: Line number in Monty bytecodes file where error occurred.
+ * @message: The corresponding error message to print.
+ *
+ * Return: (EXIT_FAILURE) always.
+ */
+int pchar_error(unsigned int line_number, char *message)
+{
+	fprintf(stderr, "L%u: can't pchar, %s\n", line_number, message);
+	return (EXIT_FAILURE);
+}

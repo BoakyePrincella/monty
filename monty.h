@@ -1,4 +1,3 @@
-
 #ifndef __MONTY_H__
 #define __MONTY_H__
 
@@ -88,4 +87,3 @@ int div_error(unsigned int line_number);
 int pchar_error(unsigned int line_number, char *message);
 
 #endif /* __MONTY_H__ */
-
